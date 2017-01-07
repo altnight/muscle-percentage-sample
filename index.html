@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="https://unpkg.com/vue@2.1.8/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-material@0.5.2"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://unpkg.com/vue-material@0.5.2/dist/vue-material.css">
+</head>
+<body>
+  <div id="app">
+    <div style="max-width: 600px; margin: 0 auto;">
+
+      <md-layout :md-gutter="24">
+        <md-layout >
+          <md-input-container>
+            <label for="heightCm">身長(cm)</label>
+            <md-input type="range"
+                      min=50
+                      max=250
+                      value="150"
+                      v-model="heightCm"></md-input>
+          </md-input-container>
+        </md-layout>
+        <md-layout >
+          <md-input-container>
+            <md-input id="heightCm"
+                      type="number"
+                      v-model="heightCm"
+                      placeholder="例:: 160">
+            </md-input>
+          </md-input-container>
+        </md-layout>
+      </md-layout>
+
+      <md-layout :md-gutter="24">
+        <md-layout >
+          <md-input-container>
+            <label for="weight">体重(kg)</label>
+            <md-input type="range"
+                      min=10
+                      max=150
+                      v-model="weight"></md-input>
+          </md-input-container>
+        </md-layout>
+        <md-layout >
+          <md-input-container>
+            <md-input id="weight"
+                      type="number"
+                      v-model="weight"
+                      placeholder="例:: 50">
+            </md-input>
+          </md-input-container>
+        </md-layout>
+      </md-layout>
+
+      <md-layout :md-gutter="24">
+        <md-layout >
+          <md-input-container>
+            <label for="taishibouritu">体脂肪率(%)</label>
+            <md-input type="range"
+                      min=0
+                      max=80
+                      v-model="taishibouritu"></md-input>
+          </md-input-container>
+        </md-layout>
+        <md-layout >
+          <md-input-container>
+            <md-input id="taishibouritu"
+                      type="number"
+                      v-model="taishibouritu"
+                      placeholder="例:: 20">
+            </md-input>
+          </md-input-container>
+        </md-layout>
+      </md-layout>
+
+      <md-layout >
+        <md-layout >
+          <span>BMI:: {{ bmi | toFixed }}</span>
+        </md-layout>
+        <md-layout >
+          <span>適正体重:: {{ averageWeight | toFixed }} kg</span>
+        </md-layout>
+      </md-layout>
+      <md-layout :md-gutter="8">
+        <md-layout >
+          <span>体脂肪量:: {{ taishibouritu | toFixed }} kg</span>
+        </md-layout>
+        <md-layout >
+          <span>除脂肪体重:: {{ zyosiboutaizyuu | toFixed }} kg</span>
+        </md-layout>
+        <md-layout >
+          <span>筋肉量:: {{ kinikuryou | toFixed }} kg</span>
+        </md-layout>
+        <md-layout >
+          <span>筋肉率:: {{ kinnikuritu | toFixed }} %</span>
+        </md-layout>
+      </md-layout>
+
+      <div>
+        <a href="https://github.com/altnight/muscle-percentage-sample">repository</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    Vue.use(VueMaterial)
+
+    new Vue({
+      el: "#app",
+      data: {
+        // 身長(cm)
+        heightCm: 150,
+        // 体重
+        weight: 60,
+        // 体脂肪率
+        taishibouritu: 20,
+      },
+      filters: {
+        toFixed: function(value) {
+          return parseFloat(value).toFixed(1);
+        },
+      },
+      computed: {
+        // 体脂肪量
+        taishibouryou: function (){
+          return this.weight * (this.taishibouritu / 100);
+        },
+        // 除脂肪体重
+        zyosiboutaizyuu: function() {
+          return this.weight - this.taishibouryou;
+        },
+        // 筋肉量
+        kinikuryou: function() {
+          return this.zyosiboutaizyuu / 2;
+        },
+        // 筋肉率
+        kinnikuritu: function() {
+          return ((this.kinikuryou / this.weight ) * 100);
+        },
+        // 身長(m)
+        _heightMetrol: function() {
+          return this.heightCm / 100;
+        },
+        // BMI
+        bmi: function() {
+          return this.weight / (this._heightMetrol * this._heightMetrol);
+        },
+        // 適正体重
+        averageWeight: function() {
+          return (this._heightMetrol* this._heightMetrol) * 22;
+        },
+      },
+    })
+  </script>
+</body>
+</html>
